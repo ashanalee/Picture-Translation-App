@@ -46,7 +46,7 @@ import java.util.Locale;
 
 public class Home_screen extends AppCompatActivity {
 
-    ImageButton camera,gallery, share, translates;
+    ImageButton camera,gallery, share, translates,rateus;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
@@ -56,8 +56,8 @@ public class Home_screen extends AppCompatActivity {
     ActionBarDrawerToggle actionBarDrawerToggle;
     ImageView image;
     Button translate,speaker;
-    String uriString = "";
-
+    String uriString = "",text;
+    private boolean isSpeaking = false;
     Uri uri;
 
     @Override
@@ -90,6 +90,7 @@ public class Home_screen extends AppCompatActivity {
         desc = findViewById(R.id.desc);
         speak = findViewById(R.id.speak);
         share=findViewById(R.id.Share);
+        rateus =findViewById(R.id.rateus);
 
 
         camera.setOnClickListener(new View.OnClickListener() {
@@ -128,16 +129,20 @@ public class Home_screen extends AppCompatActivity {
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                if(i != TextToSpeech.ERROR)
-                    t1.setLanguage(Locale.US);
+                t1.setLanguage(Locale.US);
             }
         });
 
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String text = desc.getText().toString();
-                t1.speak(text,TextToSpeech.QUEUE_FLUSH,null);
+                text = desc.getText().toString();
+                if (!isSpeaking) {
+
+                    speakOut();
+                } else {
+                    stopSpeaking();
+                }
             }
         });
 
@@ -152,7 +157,18 @@ public class Home_screen extends AppCompatActivity {
             }
         });
 
+        rateus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://play.google.com/store/apps/details?id=com.speaktranslate.englishalllanguaguestranslator.ivoicetranslation")));
 
+                } catch (Exception ex) {
+                    startActivity(new
+                            Intent(Intent.ACTION_VIEW,Uri.parse("https://play.google.com/store/apps/details?id=com.speaktranslate.englishalllanguaguestranslator.ivoicetranslation")));
+                }
+            }
+        });
 
         navigationView.bringToFront();
         actionBarDrawerToggle  = new ActionBarDrawerToggle(this, drawerLayout, R.string.menu_Open, R.string.menu_Close);
@@ -167,6 +183,7 @@ public class Home_screen extends AppCompatActivity {
                 item.setChecked(true);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 switch (id) {
+
                     case R.id.nav_share:
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.setType("text/plain");
@@ -177,29 +194,22 @@ public class Home_screen extends AppCompatActivity {
                         break;
 
                     case R.id.nav_rate:
-                        // Handle rate option
                         try {
                             startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://play.google.com/store/apps/details?id=com.speaktranslate.englishalllanguaguestranslator.ivoicetranslation")));
-                            // google play
 
                         } catch (Exception ex) {
                             startActivity(new
                                     Intent(Intent.ACTION_VIEW,Uri.parse("https://play.google.com/store/apps/details?id=com.speaktranslate.englishalllanguaguestranslator.ivoicetranslation")));
-                                    // website googleplay
                         }
                         break;
 
                     case R.id.nav_privacy:
                         showTermsDialog();
                         break;
-
                 }
-
                 return true;
             }
         });
-
-
     }
 
     private void extractTextFromUri(Context applicationContext, Uri urii) {
@@ -211,7 +221,6 @@ public class Home_screen extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Text>() {
                                 @Override
                                 public void onSuccess(Text visionText) {
-                                    // Task completed successfully
                                     desc.setText(visionText.getText());
                                 }
                             })
@@ -247,9 +256,7 @@ public class Home_screen extends AppCompatActivity {
 
     public void onBackPressed()
     {
-
-
-            new AlertDialog.Builder(this).setMessage("Are you sure you want to exit?").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this).setMessage("Are you sure you want to exit?").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
@@ -258,11 +265,25 @@ public class Home_screen extends AppCompatActivity {
 
     }
 
+    private void speakOut() {
+        t1.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        isSpeaking = true;
+        speak.setText("Stop Speaking");
+    }
+
+    private void stopSpeaking() {
+        if (t1.isSpeaking()) {
+            t1.stop();
+        }
+        isSpeaking = false;
+        speak.setText("Speak");
+    }
+
 
     private void showTermsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Terms and Conditions")
-                .setMessage("Terms and Conditions - Picture Translation App\n" +
+                .setMessage("Picture Translation App\n" +
                         "\n" +
                         "Welcome to the Picture Translation App. Please read these terms and conditions carefully before using the app. By using the app, you agree to be bound by these terms and conditions.\n" +
                         "\n" +
@@ -282,24 +303,18 @@ public class Home_screen extends AppCompatActivity {
                 .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // User clicked the Accept button
                         dialog.dismiss();
-                        // Perform further actions if needed
+
                     }
                 })
                 .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // User clicked the Decline button
                         dialog.dismiss();
-                        // Perform further actions if needed
                     }
                 });
 
         AlertDialog dialog = builder.create();
         dialog.show();
 }
-
-
-
 }

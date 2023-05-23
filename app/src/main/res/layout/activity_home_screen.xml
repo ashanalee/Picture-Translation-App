@@ -113,6 +113,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:text="Select Picture Fom Gallery or Take it From Camera"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/image"
+                        app:layout_constraintEnd_toEndOf="@+id/image"
+                        app:layout_constraintStart_toStartOf="@+id/image"
+                        app:layout_constraintTop_toTopOf="@+id/image" />
+
                     <ImageView
                         android:id="@+id/image"
                         android:layout_width="match_parent"
@@ -124,6 +138,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:srcCompat="@tools:sample/avatars" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -176,7 +191,7 @@
                                 android:text="Description"
                                 android:textAlignment="textStart"
                                 android:textColor="@color/black"
-                                android:textSize="24sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </ScrollView>
@@ -190,7 +205,7 @@
                 android:id="@+id/speak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/speak"
                 android:text="Speak"
                 app:layout_constraintEnd_toEndOf="parent"
